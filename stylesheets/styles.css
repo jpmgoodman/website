@@ -1,4 +1,5 @@
-@font-face {
+
+nt-face {
   font-family: 'Noto Sans';
   font-weight: 400;
   font-style: normal;
@@ -88,12 +89,13 @@ h3, h4, h5, h6 {
 }
 
 a {
-  color:#39c;
+  color:#069;
   text-decoration:none;
 }
 
 a:hover {
-  color:#069;
+/*  color:#39c;*/
+  text-decoration:underline;
 }
 
 a small {
@@ -224,7 +226,7 @@ header ul a strong {
 }
 
 section {
-  width:500px;
+  width:525px;
   float:right;
   padding-bottom:50px;
 }
@@ -336,3 +338,4 @@ footer {
     color:#444;
   }
 }
+
