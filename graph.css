@@ -1,0 +1,212 @@
+html,body {
+    background-color:white;
+    width:100%;
+    height:100%;
+    padding:0;
+    margin:0;
+}
+.instructions.banner {
+    -o-user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    user-select: text;
+    padding:10px 20px 10px 20px;
+    position:absolute;
+    top:0;
+    left:0;
+    text-color:black;
+    opacity:0.5;
+    font-size:20px;
+    width:100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.destroyer {
+    display:none;
+    /*border: solid black 2px;*/
+    opacity:0.15;
+    position: absolute;
+    font-size:3em;
+    color:black;
+    padding: 0px 10px 0px 10px;
+    top:0;
+    right:50px;
+    cursor: pointer;
+}
+.destroyer:hover{
+    opacity: 1;
+}
+.active {
+    opacity:1;
+}
+.colors {
+    position:absolute;
+    top:0;
+    right:0;
+    width:50px;
+    height:100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    opacity:0.15;
+}
+.colors:hover {
+    opacity:1;
+    cursor:pointer;
+}
+.color {
+    height:10%;
+    border-bottom:none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.color:hover {
+    border: solid white 2px;
+}
+.color-select {
+    opacity:1;
+}
+.color.color-select {
+    border: solid black 3px;
+}
+#red {
+    background-color:#ff0000;
+}
+#orange {
+    background-color:#ff9300;
+}
+#yellow {
+    background-color:#ffff00;
+}
+#lime {
+    background-color:#aeff00;
+}
+#green {
+    background-color:#1fff00;
+}
+#cyan {
+    background-color:#00ffff;
+}
+#sky {
+    background-color:#00b2ff;
+}
+#blue {
+    background-color:#0036ff;
+}
+#purple {
+    background-color:#9e00ff;
+}
+#pink {
+    background-color:#ff00d4;
+}
+.node, .node-ghost {
+    position:absolute;
+    z-index:1;
+    border-radius:100%;
+    width: 20px;
+    height: 20px;
+    padding: 0.5em;
+    border: solid black 3px;
+    background: white;
+    text-align:center;
+    cursor:move;
+}
+.node:hover {
+    /*transform:scale(1.5);
+    -ms-transform:scale(1.5);
+    -moz-transform:scale(1.5);
+    -webkit-transform:scale(1.5);
+    -o-transform:scale(1.5);*/
+}
+
+.line {
+    border: solid black 2px;
+    background-color:black;
+    z-index:0;
+}
+
+.node-ghost {
+    cursor:default;
+    opacity:0.25;
+    cursor:crosshair;
+}
+
+.adj-matrix.footer {
+    opacity:0.5;
+    font-size:20px;
+    position:absolute;
+    bottom:0;
+    left:0;
+    padding:10px 20px 10px 20px;
+    cursor:pointer;
+    border: solid white 2px;
+    margin:10px;
+}
+.adj-matrix.footer:hover {
+    background:white;
+}
+.adj-matrix.footer.pressed {
+    background-color:lightgrey;
+    color:black;
+    border: solid lightgrey 2px;
+    z-index:300;
+}
+.adj-matrix.results {
+    display:none;
+    color:black;
+    background:white;
+    font-size:1.5em;
+    border: solid lightgrey 3px;
+    position:absolute;
+    left:0;
+    bottom:54px;
+    margin:10px;
+    padding:10px 20px 10px 20px;
+    -o-user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    user-select: text;
+}
+.zooms {
+    display:none;
+    position:absolute;
+    bottom:0;
+    right:50px;
+    margin:10px;
+}
+.zoom {
+    opacity:0.5;
+    display:inline-block;
+    text-align:center;
+    width:50px;
+    font-size:2.5em;
+    padding:0;
+    margin:0;
+    border: solid white 2px;
+}
+.zoom:hover {
+    cursor:pointer;
+    border: solid lightgrey 2px;
+    opacity:1;
+}
+.adj-matrix.footer:hover{
+    border: solid lightgrey 2px;
+    color:black;
+    opacity:1;
+}
+
+.selected {
+    border-color:red;
+}
+
+.no-select {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+    not supported by any browser */
+}
