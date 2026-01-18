@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>10x10 Toggle Grid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #e5e5e5;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 40px 48px;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      width: 420px; /* fix width so wrapper doesn't grow when result text appears */
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+      max-width: 420px;
+    }
+
+    .grid {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: none;
+      padding: 0; /* added padding around grid */
+      display: grid;
+      grid-template-columns: repeat(10, 40px);
+      grid-template-rows: repeat(10, 40px);
+      gap: 2px;
+    }
+
+    .cell {
+      /* normal cells */
+      /* normal cells */
+      width: 40px;
+      height: 40px;
+      background: #ffffff;
+      border: 1px solid #000000;
+      box-sizing: border-box;
+      cursor: pointer;
+      transition: transform 0.08s ease, border-color 0.12s ease;
+    }
+
+    .cell:hover {
+      /* no hover effect */
+    }
+
+    .locked .cell {
+      cursor: not-allowed !important;
+    }
+
+    .cell.active {
+      background: #000000;
+      border-color: #000000;
+      box-shadow: none;
+    }
+
+    .cell.active {
+      background: #000000;
+      border-color: #000000;
+      box-shadow: none !important;
+    }
+      .highlight {
+      outline: 2px solid #e11d48;
+      opacity: 1 !important;
+    }
+
+    .dim {
+      opacity: 0.25;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Build a Two-Source Extractor</h1>
+    <p class="subtitle" id="instruction">Toggle the cells on-and-off so that I can't find a big monochromatic square.</p>
+    <div class="grid" id="grid"></div>
+    <button id="doneBtn" style="margin-top: 10px; padding: 8px 16px; font-size: 14px; border-radius: 6px; border: none; background: #333; color: white; cursor: pointer;">Done</button>
+    <p id="result" class="subtitle" style="margin-top: 6px; min-height: 20px;"></p>
+  </div>
+
+  <script>
+    const grid = document.getElementById('grid');
+    let canToggle = true;
+
+    // Drag-to-paint support
+    let isDragging = false;
+    let dragTargetState = null; // true = make active (black), false = make inactive (white)
+
+    function setCellState(cell, makeActive) {
+      if (makeActive) cell.classList.add('active');
+      else cell.classList.remove('active');
+    }
+
+    function beginDragOnCell(cell) {
+      if (!canToggle) return;
+      isDragging = true;
+      dragTargetState = !cell.classList.contains('active');
+      setCellState(cell, dragTargetState);
+    }
+
+    function dragOverCell(cell) {
+      if (!canToggle) return;
+      if (!isDragging) return;
+      setCellState(cell, dragTargetState);
+    }
+
+    function endDrag() {
+      isDragging = false;
+      dragTargetState = null;
+    }
+
+    // End drag even if mouse is released outside the grid
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+    window.addEventListener('blur', endDrag);
+
+    for (let i = 0; i < 100; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+
+      // Click + drag to paint like a desktop selection tool.
+      cell.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        beginDragOnCell(cell);
+      });
+      cell.addEventListener('pointerenter', () => dragOverCell(cell));
+
+      grid.appendChild(cell);
+    }
+
+    // If you press down on empty grid space, don't start selecting page text.
+    grid.addEventListener('pointerdown', (e) => e.preventDefault());
+
+    const doneBtn = document.getElementById('doneBtn');
+    const resultEl = document.getElementById('result');
+
+    function countBits(x) {
+      let c = 0;
+      while (x) {
+        x &= x - 1;
+        c++;
+      }
+      return c;
+    }
+
+    doneBtn.addEventListener('click', () => {
+      const size = 10;
+      const cells = Array.from(grid.children);
+      const instruction = document.getElementById('instruction');
+
+      // If button says Retry, clear highlight + text
+      if (doneBtn.textContent === 'Retry') {
+        cells.forEach(cell => {
+          cell.classList.remove('highlight');
+          cell.classList.remove('dim');
+        });
+        instruction.classList.remove('dim');
+        resultEl.textContent = '';
+        doneBtn.textContent = 'Done';
+        grid.classList.remove('locked');
+        canToggle = true;
+        return;
+      }
+
+      // Normal Done behavior
+
+      // Build color matrix: true = black, false = white
+      const color = [];
+      for (let r = 0; r < size; r++) {
+        const row = [];
+        for (let c = 0; c < size; c++) {
+          const idx = r * size + c;
+          row.push(cells[idx].classList.contains('active'));
+        }
+        color.push(row);
+      }
+
+      // Clear previous highlights
+      cells.forEach(cell => {
+        cell.classList.remove('highlight');
+        cell.classList.remove('dim');
+      });
+
+      // Dim everything initially (grid + instructions)
+      instruction.classList.add('dim');
+      cells.forEach(cell => cell.classList.add('dim'));
+
+      cells.forEach(cell => cell.classList.remove('highlight'));
+
+      let bestK = 0;
+      let bestMaskI = 0;
+      let bestMaskJ = 0;
+      let bestColor = null; // true = black, false = white
+
+      const fullMask = (1 << size) - 1;
+      for (let maskI = 1; maskI <= fullMask; maskI++) {
+        const rowsCount = countBits(maskI);
+        for (let maskJ = 1; maskJ <= fullMask; maskJ++) {
+          const colsCount = countBits(maskJ);
+          if (rowsCount !== colsCount) continue; // need |I'| = |J'|
+          const k = rowsCount;
+          if (k <= bestK) continue;
+
+          let firstColor = null;
+          let ok = true;
+          for (let r = 0; r < size && ok; r++) {
+            if (!(maskI & (1 << r))) continue;
+            for (let c = 0; c < size; c++) {
+              if (!(maskJ & (1 << c))) continue;
+              const val = color[r][c];
+              if (firstColor === null) {
+                firstColor = val;
+              } else if (val !== firstColor) {
+                ok = false;
+                break;
+              }
+            }
+          }
+
+          if (ok && firstColor !== null) {
+            bestK = k;
+            bestMaskI = maskI;
+            bestMaskJ = maskJ;
+            bestColor = firstColor;
+          }
+        }
+      }
+
+      if (bestK === 0) {
+        if (resultEl) {
+          resultEl.textContent = 'No monochromatic square found.';
+        }
+        return;
+      }
+
+      // Highlight best square
+      for (let r = 0; r < size; r++) {
+        if (!(bestMaskI & (1 << r))) continue;
+        for (let c = 0; c < size; c++) {
+          if (!(bestMaskJ & (1 << c))) continue;
+          const idx = r * size + c;
+          cells[idx].classList.add('highlight');
+          cells[idx].classList.remove('dim');
+        }
+      }
+
+      const k = bestK;
+      if (resultEl) {
+        resultEl.textContent = 'Largest monochromatic square: ' + k + ' × ' + k + '.';
+      }
+      doneBtn.textContent = 'Retry';
+      grid.classList.add('locked');
+      canToggle = false;
+    });
+  </script>
+</body>
+</html>
